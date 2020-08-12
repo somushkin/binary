@@ -1,0 +1,12 @@
+CREATE SCHEMA `binary` DEFAULT CHARACTER SET utf8mb4;
+
+CREATE TABLE `binary`.`nodes` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `parent_id` INT(11) NULL,
+  `position` INT(11) NULL,
+  `path` VARCHAR(12288) NULL,
+  `level` INT(11) NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+INSERT INTO `binary`.`nodes` (`parent_id`, `position`, `path`, `level`) VALUES ('0', '0', '1', '1');
