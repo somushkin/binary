@@ -15,6 +15,15 @@ class Node extends Model
         $this->data['position'] = $position;
     }
 
+    public function save()
+    {
+        parent::save();
+        $this->data['id'] = DB::getInstance()->lastInsertId;
+        $this->data['level'] = $this->getLevel();
+        $this->data['path'] = $this->getPath();
+        parent::save();
+    }
+
     public function getParent()
     {
         return static::findByID($this->data['parent_id']);

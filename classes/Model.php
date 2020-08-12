@@ -31,11 +31,9 @@ abstract class Model
         try {
             if (!isset($this->data['id'])) {
                 $this->insert();
-                $this->data['id'] = DB::getInstance()->lastInsertId;
-                $this->data['level'] = $this->getLevel();
-                $this->data['path'] = $this->getPath();
+            } else {
+                $this->update();
             }
-            $this->update();
         } catch (\Exception $e) {
             echo $e->getMessage();
             die;
