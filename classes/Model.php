@@ -42,7 +42,7 @@ abstract class Model
     public function save()
     {
         try {
-            if (!isset($this->data['id'])) {
+            if (!isset($this->id)) {
                 $this->insert();
             } else {
                 $this->update();
@@ -71,7 +71,7 @@ abstract class Model
 
     protected function update()
     {
-        $values = [':id' => $this->data['id']];
+        $values = [':id' => $this->id];
         $pairs = [];
 
         foreach ($this->data as $key => $value) {
@@ -93,7 +93,7 @@ abstract class Model
     {
         $sql = 'DELETE FROM '.static::TABLE.' WHERE id=:id';
 
-        DB::getInstance()->execute($sql, [':id' => $this->data['id']]);
+        DB::getInstance()->execute($sql, [':id' => $this->id]);
     }
 
     public function __set($name, $value)

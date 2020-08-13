@@ -26,15 +26,15 @@ class Node extends Model
     public function save()
     {
         $this->insert();
-        $this->data['id'] = DB::getInstance()->lastInsertId;
-        $this->data['level'] = $this->getLevel();
-        $this->data['path'] = $this->getPath();
+        $this->id = DB::getInstance()->lastInsertId;
+        $this->level = $this->getLevel();
+        $this->path = $this->getPath();
         $this->update();
     }
 
     protected function getParent()
     {
-        return $this->findByID($this->data['parent_id']);
+        return $this->findByID($this->parent_id);
     }
 
     protected function getLevel()
@@ -46,7 +46,7 @@ class Node extends Model
     protected function getPath()
     {
         $parent = $this->getParent();
-        return $parent ? $this->getParent()->path . '.' . $this->data['id'] : $this->data['id'];
+        return $parent ? $this->getParent()->path . '.' . $this->id : $this->id;
     }
 
     public function getChildren()
