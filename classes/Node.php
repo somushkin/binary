@@ -7,7 +7,6 @@ namespace classes;
 class Node extends Model
 {
     protected const TABLE = 'nodes';
-    protected $data = [];
 
     public static function create($parent_id = 0, $position = 0)
     {
@@ -23,6 +22,10 @@ class Node extends Model
         return self::findWhere(['level' => 1])[0];
     }
 
+    /*
+     * Переопределяем сохранение ячейки.
+     * После вставки в базу она получит ID, исходя из которого можно построить её путь и вычислить уровень.
+     */
     public function save()
     {
         $this->insert();
@@ -49,6 +52,9 @@ class Node extends Model
         return $parent ? $this->getParent()->path . '.' . $this->id : $this->id;
     }
 
+    /*
+     * Получить пару потомков ячейки, если таковые имеются
+     */
     public function getChildren()
     {
         return self::findWhere(['parent_id' => $this->id]);

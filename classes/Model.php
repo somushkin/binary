@@ -22,12 +22,12 @@ abstract class Model
         return DB::getInstance()->query($sql, [':id' => $id], static::class)[0];
     }
 
-    public static function findWhere($conditions = [])
+    public static function findWhere($conditions = [], $comparison = '=')
     {
         $where = [];
         $data = [];
         foreach ($conditions as $key => $value) {
-            $where[] = $key . '=:' . $key;
+            $where[] = $key . ' ' . $comparison . ' :' . $key;
             $data[':' . $key] = $value;
         }
 
@@ -95,6 +95,10 @@ abstract class Model
 
         DB::getInstance()->execute($sql, [':id' => $this->id]);
     }
+
+    /*
+     * Магические методы для удобного обращения к свойствам объекта, которые явно не заданы
+     */
 
     public function __set($name, $value)
     {

@@ -10,6 +10,9 @@ class DB
     protected static $instance;
     public $lastInsertId;
 
+    /*
+     * Реализация паттерна Singleton
+     */
     public static function getInstance()
     {
         if (!self::$instance) {
@@ -18,6 +21,9 @@ class DB
         return self::$instance;
     }
 
+    /*
+     * Подключение к БД
+     */
     private function __construct()
     {
         $config = (include __DIR__ . '/../config.php')['db'];
@@ -28,6 +34,9 @@ class DB
         );
     }
 
+    /*
+     * Для запросов, где ожидается результат от базы (выборк)
+     */
     public function query($sql, $data = [], $class)
     {
         $sth = $this->dbh->prepare($sql);
@@ -35,6 +44,9 @@ class DB
         return $sth->fetchAll(\PDO::FETCH_CLASS, $class);
     }
 
+    /*
+     * Просто выполнить запрос (вставка и обновление)
+     */
     public function execute($sql, $data = [])
     {
         $sth = $this->dbh->prepare($sql);
