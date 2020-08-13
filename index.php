@@ -2,6 +2,9 @@
 
 require_once __DIR__ . '/autoload.php';
 
+//\classes\DB::createTable();
+//\classes\DB::dropTable();
+//
 //\classes\BinaryTree::destroy();
 //\classes\BinaryTree::build(5);
 
