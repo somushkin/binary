@@ -9,33 +9,48 @@ class Node extends Model
     protected const TABLE = 'nodes';
     protected $data = [];
 
-    public function __construct($parent_id = 0, $position = 0)
+    public static function create($parent_id = 0, $position = 0)
     {
-        $this->data['parent_id'] = $parent_id;
-        $this->data['position'] = $position;
+        $node = new self();
+        $node->parent_id = $parent_id;
+        $node->position = $position;
+        $node->save();
+        return $node;
+    }
+
+    public static function first()
+    {
+        return self::findWhere(['level' => 1])[0];
     }
 
     public function save()
     {
-        parent::save();
+        $this->insert();
         $this->data['id'] = DB::getInstance()->lastInsertId;
         $this->data['level'] = $this->getLevel();
         $this->data['path'] = $this->getPath();
-        parent::save();
+        $this->update();
     }
 
-    public function getParent()
+    protected function getParent()
     {
-        return static::findByID($this->data['parent_id']);
+        return $this->findByID($this->data['parent_id']);
     }
 
-    public function getLevel()
+    protected function getLevel()
     {
-        return ++$this->getParent()->level;
+        $parent = $this->getParent();
+        return $parent ? ++$parent->level : 1;
     }
 
-    public function getPath()
+    protected function getPath()
     {
-        return $this->getParent()->path . '.' . $this->data['id'];
+        $parent = $this->getParent();
+        return $parent ? $this->getParent()->path . '.' . $this->data['id'] : $this->data['id'];
+    }
+
+    public function getChildren()
+    {
+        return self::findWhere(['parent_id' => $this->id]);
     }
 }

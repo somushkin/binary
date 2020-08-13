@@ -28,11 +28,11 @@ class DB
         );
     }
 
-    public function query($sql, $data = [])
+    public function query($sql, $data = [], $class)
     {
         $sth = $this->dbh->prepare($sql);
         $sth->execute($data);
-        return $sth->fetchAll(\PDO::FETCH_CLASS, static::class);
+        return $sth->fetchAll(\PDO::FETCH_CLASS, $class);
     }
 
     public function execute($sql, $data = [])

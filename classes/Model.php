@@ -13,13 +13,26 @@ abstract class Model
     public static function findAll()
     {
         $sql = 'SELECT * FROM ' . static::TABLE;
-        return DB::getInstance()->query($sql, []);
+        return DB::getInstance()->query($sql, [], static::class);
     }
 
     public static function findByID($id)
     {
-        $sql = 'SELECT * FROM nodes WHERE id=:id';
-        return DB::getInstance()->query($sql, [':id' => $id])[0];
+        $sql = 'SELECT * FROM '.static::TABLE.' WHERE id=:id';
+        return DB::getInstance()->query($sql, [':id' => $id], static::class)[0];
+    }
+
+    public static function findWhere($conditions = [])
+    {
+        $where = [];
+        $data = [];
+        foreach ($conditions as $key => $value) {
+            $where[] = $key . '=:' . $key;
+            $data[':' . $key] = $value;
+        }
+
+        $sql = 'SELECT * FROM '.static::TABLE.' WHERE '.implode(' AND ', $where);
+        return DB::getInstance()->query($sql, $data, static::class);
     }
 
     /**
@@ -38,6 +51,7 @@ abstract class Model
             echo $e->getMessage();
             die;
         }
+        return $this;
     }
 
     protected function insert()
@@ -52,6 +66,7 @@ abstract class Model
         $sql = 'INSERT INTO '.static::TABLE.' ('.$keysStr.') VALUES ('.$valuesStr.')';
 
         DB::getInstance()->execute($sql, $values);
+        return $this;
     }
 
     protected function update()
@@ -71,6 +86,14 @@ abstract class Model
         $sql = 'UPDATE '.static::TABLE.' SET '.implode(',', $pairs).' WHERE id=:id';
 
         DB::getInstance()->execute($sql, $values);
+        return $this;
+    }
+
+    public function delete()
+    {
+        $sql = 'DELETE FROM '.static::TABLE.' WHERE id=:id';
+
+        DB::getInstance()->execute($sql, [':id' => $this->data['id']]);
     }
 
     public function __set($name, $value)
